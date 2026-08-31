@@ -3,7 +3,7 @@
 CRM SaaS tuyển sinh đa cơ sở theo workflow **SM → HoEC → EC**.
 
 ## Stack
-- Next.js 16.3.3 / React 19.2.8 / Node 22+
+- Next.js 16.3.3 / React 19.2.8 / Node 22.x
 - Supabase Postgres + Auth + RLS
 - `@supabase/ssr` 0.12.5
 - genAi: `#243C8F`, `#19B7A5`, `#69B7FF`
@@ -34,14 +34,43 @@ Dashboard, Lead đa cơ sở, Pipeline Kanban kéo-thả, Việc cần làm, L�
 
 Production không seed fake customer/lead. Một SaaS account có thể tạo workspace riêng, sau đó SM thêm nhiều cơ sở và nhân viên bên trong.
 
-## Local
+## Chạy localhost
+
+Yêu cầu: **Node 22.x** và npm.
+
 ```bash
+git clone https://github.com/laomatday/genAi.git
+cd genAi
 cp .env.example .env.local
 npm install
-npm run typecheck
-npm run lint
 npm run dev
 ```
+
+Mở:
+
+```text
+http://localhost:3000
+```
+
+`npm run dev` được khóa ở `127.0.0.1:3000` để test trên chính máy.
+
+Nếu muốn mở cho điện thoại hoặc máy khác cùng mạng LAN:
+
+```bash
+npm run dev:lan
+```
+
+Sau đó truy cập bằng IP nội bộ của máy, ví dụ `http://192.168.1.20:3000`.
+
+### Supabase Auth khi chạy local
+
+Trong Supabase Dashboard → **Authentication → URL Configuration**, thêm Redirect URL:
+
+```text
+http://localhost:3000/**
+```
+
+Signup hiện lấy origin của request, vì vậy khi app chạy localhost email xác thực sẽ yêu cầu quay về `http://localhost:3000/auth/confirm`.
 
 ## Supabase production
 - Project ref: `mgilfojjplgmfuycsekb`
