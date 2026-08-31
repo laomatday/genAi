@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createWorkspace } from "./actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function Onboarding({searchParams}:{searchParams:Promise<{error?:string}>}){
  const supabase=await createClient();
  const {data:claims}=await supabase.auth.getClaims();
