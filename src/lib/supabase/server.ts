@@ -1,17 +1,11 @@
 import type { Database } from "./database.types";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./env";
 
 export async function createClient(){
-  const url=process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key=process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-
-  if(!url||!key){
-    throw new Error("SUPABASE_ENV_MISSING: set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY");
-  }
-
   const cookieStore=await cookies();
-  return createServerClient<Database>(url,key,{
+  return createServerClient<Database>(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{
     cookies:{
       getAll(){return cookieStore.getAll()},
       setAll(cookiesToSet){
