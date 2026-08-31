@@ -1,18 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse,type NextRequest } from "next/server";
+import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./env";
 
 export async function updateSession(request:NextRequest){
-  const url=process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key=process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-
-  // Keep the app reachable if Vercel env has not been configured yet.
-  // The CRM layout will show a friendly configuration screen instead of a 500.
-  if(!url||!key){
-    return NextResponse.next({request});
-  }
-
   let response=NextResponse.next({request});
-  const supabase=createServerClient(url,key,{
+  const supabase=createServerClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{
     cookies:{
       getAll(){return request.cookies.getAll()},
       setAll(cookiesToSet){
