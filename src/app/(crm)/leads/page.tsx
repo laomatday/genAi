@@ -1,0 +1,2 @@
+import {getPipeline} from "@/lib/data/crm";import {LeadTable} from "@/components/LeadTable";
+export default async function LeadsPage(){const {cards}=await getPipeline();return <><div className="page-head"><div><h1>Lead</h1><p>Một lead có thể quan tâm hoặc đăng ký tại nhiều cơ sở.</p></div><button className="primary-btn">+ Thêm lead</button></div><div className="gem-filter"><input placeholder="Tìm tên hoặc số điện thoại"/><button>Tất cả trạng thái⌄</button><button>Tất cả cơ sở⌄</button><button>Tất cả EC⌄</button></div><LeadTable cards={cards}/></>}

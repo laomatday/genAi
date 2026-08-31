@@ -1,0 +1,3 @@
+-- Historical production migration marker only.
+-- This migration briefly removed the onboarding RPC in production.
+-- It was restored with stricter auth checks by 20260831182006_restore_saas_onboarding.sql.

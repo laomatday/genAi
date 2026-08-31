@@ -1,0 +1,1 @@
+export function KpiCard({label,value,hint}:{label:string;value:string;hint:string}){return <article className="surface kpi-card"><span>{label}</span><strong>{value}</strong><small>{hint}</small></article>}

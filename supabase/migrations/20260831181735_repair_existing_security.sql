@@ -1,0 +1,2 @@
+-- Historical production migration marker only.
+-- Security repair content is represented by 20260831181309_repair_existing_security.sql.

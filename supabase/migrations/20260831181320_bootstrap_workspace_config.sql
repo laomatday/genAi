@@ -1,0 +1,3 @@
+-- Historical production migration marker only.
+-- This migration briefly seeded an empty genAi CRM workspace in production.
+-- The seed was removed by 20260831182006_restore_saas_onboarding.sql before launch.

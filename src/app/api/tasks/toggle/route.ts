@@ -1,0 +1,2 @@
+import {NextResponse} from "next/server";import {createClient} from "@/lib/supabase/server";
+export async function POST(request:Request){const {id,done}=await request.json();if(!process.env.NEXT_PUBLIC_SUPABASE_URL)return NextResponse.json({ok:true,demo:true});const supabase=await createClient();const {error}=await supabase.from("tasks").update({status:done?"DONE":"OPEN",completed_at:done?new Date().toISOString():null}).eq("id",id);if(error)return NextResponse.json({error:error.message},{status:403});return NextResponse.json({ok:true})}

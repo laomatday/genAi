@@ -1,0 +1,2 @@
+-- Production intentionally has no fake data seed.
+-- Workspace onboarding is handled by RLS + private trigger migration 20260831182149.
