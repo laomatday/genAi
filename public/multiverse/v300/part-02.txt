@@ -1,0 +1,50 @@
+ass="hpFill" id="hpFill"></div></div></div></div><div class="meta"><div class="pill" id="floorPill">TẦNG 1</div><div class="pill coin" id="coinPill">0</div><div class="pill key" id="keyPill">0</div><div class="pill" id="levelPill">LV 1</div></div></div>
+<div id="bossHud"><div class="bossName" id="bossName"></div><div class="bossTrack"><div class="bossFill" id="bossFill"></div></div></div>
+<div class="actions"><button class="uiBtn" id="inventoryBtn">I · KHO ĐỒ</button><button class="uiBtn" id="summonBtn">SUMMON</button></div>
+<div class="hint">A/D di chuyển · Space double jump · Click đánh · 1/2/3 kỹ năng · K dash · E tương tác · I kho đồ</div>
+<div id="toast"></div>
+
+<div class="modal show" id="startModal"><div class="panel"><h2>Multiverse Adventures</h2><p>Chọn nhân vật. Mỗi tộc/lớp có lượng HP nền khác nhau; HUD chỉ hiển thị thanh máu, không hiện con số HP.</p><div class="grid" id="heroGrid"></div><div class="row"><button class="uiBtn" id="continueBtn" style="display:none">TIẾP TỤC SAVE</button><button class="uiBtn" id="resetBtn">XÓA SAVE</button></div></div></div>
+<div class="modal" id="inventoryModal"><div class="panel"><div class="row" style="justify-content:space-between"><h2>Kho đồ</h2><button class="uiBtn close">Đóng</button></div><div id="inventoryList" class="grid"></div></div></div>
+<div class="modal" id="npcModal"><div class="panel"><div class="row" style="justify-content:space-between"><h2 id="npcTitle">NPC</h2><button class="uiBtn close">Đóng</button></div><div id="npcText" class="dialogue"></div><div class="row" id="npcActions"></div></div></div>
+<div class="modal" id="summonModal"><div class="panel"><div class="row" style="justify-content:space-between"><h2>Summon Armor</h2><button class="uiBtn close">Đóng</button></div><p>Chỉ có vật phẩm giáp. Không có Unit. Mỗi lượt dùng 1 Summon Key; boss và shop là nguồn key chính.</p><div class="row"><button class="uiBtn" data-summon="1">QUAY ×1</button><button class="uiBtn" data-summon="10">QUAY ×10</button></div><div class="muted" style="margin-top:10px">Common 48% · Uncommon 27% · Rare 15% · Epic 7% · Legendary 2.5% · Mythical 0.5%</div></div></div>
+<div id="summonScene"><div class="summonRune"></div><div id="summonResults"></div></div>
+
+<div id="touch"><div class="touchGroup"><button class="touchBtn" data-key="a">◀</button><button class="touchBtn" data-key="d">▶</button><button class="touchBtn" data-action="jump">▲</button></div><div class="touchGroup"><button class="touchBtn" data-action="attack">⚔</button><button class="touchBtn small" data-action="skill1">1</button><button class="touchBtn small" data-action="skill2">2</button><button class="touchBtn small" data-action="skill3">3</button><button class="touchBtn small" data-key="k">K</button><button class="touchBtn small" data-action="interact">E</button></div></div>
+
+<script>
+(()=>{
+'use strict';
+const C=document.getElementById('game'),X=C.getContext('2d',{alpha:false});X.imageSmoothingEnabled=false;
+const W=C.width,H=C.height,GROUND=455,WORLD=3000,KEYS={};
+const $=id=>document.getElementById(id),clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),hit=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
+const ASSETS={};
+const ASSET_URLS={characters:'/multiverse/assets/characters.webp',ruins:'/multiverse/assets/ruins.webp',goblin:'/multiverse/assets/goblin.webp'};
+const HEROES={
+ 'Human/Knight':{race:'Human',cls:'Knight',hp:1400,atk:52,speed:4.3,jump:12.2,sprite:'Knight',skill3:'light'},
+ 'Human/Fighter':{race:'Human',cls:'Fighter',hp:1300,atk:58,speed:4.8,jump:12.1,sprite:'Fighter',skill3:'impact'},
+ 'Human/Archer':{race:'Human',cls:'Archer',hp:900,atk:34,speed:4.7,jump:12.4,sprite:'Archer',skill3:'wind'},
+ 'Human/Mage':{race:'Human',cls:'Mage',hp:750,atk:40,speed:4.2,jump:12.2,sprite:'Mage',skill3:'arcane'},
+ 'Demon':{race:'Demon',cls:'Demon',hp:1800,atk:72,speed:3.8,jump:11.2,sprite:'Demon',skill3:'dark'},
+ 'Spirit/Ifri':{race:'Spirit',cls:'Ifri',hp:1000,atk:45,speed:4.6,jump:12.6,sprite:'Ifri',skill3:'fire'},
+ 'Spirit/Sylph':{race:'Spirit',cls:'Sylph',hp:850,atk:35,speed:5.4,jump:13.5,sprite:'Sylph',skill3:'wind'},
+ 'Spirit/Gnome':{race:'Spirit',cls:'Gnome',hp:1700,atk:50,speed:3.9,jump:11.4,sprite:'Gnome',skill3:'earth'},
+ 'Angel':{race:'Angel',cls:'Angel',hp:1100,atk:44,speed:5.6,jump:13.7,sprite:'Angel',skill3:'light'}
+};
+const SPR={Knight:[2,2,96,98],Slime:[102,2,42,43],Guard:[148,2,69,75],Archer:[221,2,58,79],Mage:[283,2,80,77],Chief:[2,104,126,91],King:[132,104,161,91]};
+const ARMORS={
+ leather:{name:'Giáp Da',rarity:'common',hp:80,phys:.05,magic:0,model:'leather'},
+ chain:{name:'Giáp Xích',rarity:'uncommon',hp:160,phys:.10,magic:.03,model:'chain'},
+ iron:{name:'Giáp Sắt',rarity:'rare',hp:260,phys:.18,magic:.05,model:'iron'},
+ antimagic:{name:'Giáp Chống Ma Thuật',rarity:'rare',hp:220,phys:.08,magic:.25,model:'antimagic'},
+ dragon:{name:'Giáp Rồng Cơ Bản',rarity:'epic',hp:400,phys:.22,magic:.15,model:'dragon'},
+ crystal:{name:'Giáp Tinh Thể Ma Lực',rarity:'legendary',hp:550,phys:.18,magic:.30,model:'crystal'},
+ dragonsteel:{name:'Giáp Thép Rồng',rarity:'mythical',hp:800,phys:.35,magic:.25,model:'dragonsteel'}
+};
+const RARITY_CLASS={common:'rar-common',uncommon:'rar-uncommon',rare:'rar-rare',epic:'rar-epic',legendary:'rar-legendary',mythical:'rar-mythical'};
+let save=loadSave(),heroKey=null,HERO=null,P=null,cam=0,room=null,enemies=[],projectiles=[],drops=[],fx=[],now=performance.now(),interactLatch=false;
+function defaultSave(){return{floor:1,coins:0,keys:1,inventory:[],equipped:null,hero:null,level:1,xp:0,atkBonus:0}}
+function loadSave(){try{return Object.assign(defaultSave(),JSON.parse(localStorage.getItem('mva300')||'{}'))}catch{return defaultSave()}}
+function persist(){localStorage.setItem('mva300',JSON.stringify(save))}
+function toast(s){const t=$('toast');t.textContent=s;t.style.display='block';clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.style.display='none',1500)}
+async function loadAssets(){await Promise.all(Object.entries(ASSET_URLS).map(([k,u])=>new Prom
