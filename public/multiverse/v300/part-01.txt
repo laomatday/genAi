@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover" />
+<title>Multiverse Adventures — Dungeon Expedition</title>
+<style>
+:root{--ink:#061017;--cyan:#72e9ef;--gold:#f6cf68;--red:#d92e31}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02070b;color:#eaffff;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}button{font:inherit}
+#game{display:block;width:100vw;height:100vh;image-rendering:pixelated;background:#02070b}
+.hud{position:fixed;z-index:20;left:12px;top:10px;display:flex;align-items:flex-start;gap:10px;pointer-events:none}
+.hpWrap{width:min(390px,55vw)}.hpTitle{font-size:11px;letter-spacing:.08em;color:#d9f5f3;margin:0 0 4px 54px;text-shadow:0 2px 0 #000}
+.hpFrame{position:relative;height:42px;margin-left:42px;padding:8px 14px 8px 18px;background:linear-gradient(#263238,#11181d);border:3px solid #667278;box-shadow:0 0 0 2px #080d10,0 5px 0 #0008;clip-path:polygon(0 18%,4% 0,90% 0,100% 48%,91% 100%,5% 100%,0 82%)}
+.hpFrame:before{content:"";position:absolute;left:-48px;top:-18px;width:64px;height:64px;background:linear-gradient(135deg,#39464a,#10171b 65%);border:3px solid #65777c;clip-path:polygon(0 36%,25% 7%,58% 0,91% 23%,64% 44%,98% 57%,70% 71%,42% 100%,25% 66%,0 56%)}
+.hpFrame:after{content:"";position:absolute;left:-28px;top:12px;width:16px;height:16px;background:#f02e34;border:3px solid #7b171a;transform:rotate(45deg);box-shadow:0 0 12px #ff283f}
+.hpTrack{height:20px;background:#26080b;border:2px solid #050608;box-shadow:inset 0 3px 0 #0008;overflow:hidden}.hpFill{height:100%;width:100%;background:linear-gradient(#ff3c3c,#b70b12);box-shadow:inset 0 3px 0 #ff7373;transition:width .12s linear}
+.meta{display:flex;gap:6px;flex-wrap:wrap;max-width:440px}.pill{padding:7px 9px;background:#06141dde;border:1px solid #2c6171;border-radius:7px;color:#dffcff;box-shadow:0 3px 0 #0007;font-size:11px}.coin:before{content:"◉";color:#ffd45c;margin-right:5px}.key:before{content:"✦";color:#c28dff;margin-right:5px}
+#bossHud{position:fixed;z-index:20;top:12px;left:50%;transform:translateX(-50%);width:min(520px,55vw);display:none;pointer-events:none}.bossName{text-align:center;font-weight:900;text-shadow:0 2px 0 #000;margin-bottom:5px;color:#ffe7d1}.bossTrack{height:16px;border:3px solid #54433b;background:#13090a;box-shadow:0 0 0 2px #070708}.bossFill{height:100%;background:linear-gradient(90deg,#a20f19,#f04a38);width:100%}
+.actions{position:fixed;z-index:25;right:12px;top:10px;display:flex;gap:6px}.uiBtn{pointer-events:auto;border:1px solid #3d7785;background:#071a24e8;color:#eaffff;border-radius:8px;padding:8px 10px;box-shadow:0 3px 0 #0008;cursor:pointer}.uiBtn:hover{border-color:#7cecf0}.uiBtn b{color:#9df6e6}
+.hint{position:fixed;z-index:19;left:50%;bottom:10px;transform:translateX(-50%);padding:7px 10px;background:#06141dcc;border:1px solid #2c6171;border-radius:8px;color:#bfe7e7;font-size:11px;pointer-events:none;white-space:nowrap}
+.modal{position:fixed;inset:0;z-index:60;display:none;place-items:center;background:#02080de8;backdrop-filter:blur(2px)}.modal.show{display:grid}.panel{width:min(900px,94vw);max-height:88vh;overflow:auto;background:#081923;border:1px solid #36697a;border-radius:14px;padding:20px;box-shadow:0 20px 70px #000}.panel h2,.panel h3{margin:0 0 10px}.panel p{color:#bcd4d6;line-height:1.55}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.card{border:1px solid #2c5968;background:#0b202b;padding:12px;border-radius:10px;cursor:pointer;color:#eaffff}.card:hover{border-color:#77e1e9}.card small{display:block;color:#92aeb3;margin-top:5px}.rar-common{color:#d0c3a0}.rar-uncommon{color:#70df86}.rar-rare{color:#67a8ff}.rar-epic{color:#c783ff}.rar-legendary{color:#ffd35a}.rar-mythical{color:#ff6a66;text-shadow:0 0 8px #ff5b57}
+.dialogue{font-size:14px;line-height:1.6}.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.price{color:#ffd45c}.muted{opacity:.65}
+#summonScene{position:fixed;inset:0;z-index:80;display:none;place-items:center;background:radial-gradient(circle at center,#171033 0,#050711 55%,#000 100%);overflow:hidden}.summonRune{width:260px;height:260px;border:3px solid #b58aff;border-radius:50%;box-shadow:0 0 60px #9a68ff;position:absolute;animation:spin 2.6s linear infinite}.summonRune:before,.summonRune:after{content:"";position:absolute;inset:25px;border:2px dashed #5fe3ff;border-radius:50%}.summonRune:after{inset:68px;border-style:solid;transform:rotate(45deg)}@keyframes spin{to{transform:rotate(360deg)}}
+#summonResults{position:relative;z-index:2;width:min(900px,94vw);display:flex;flex-wrap:wrap;gap:10px;justify-content:center}.summonCard{width:150px;min-height:120px;padding:14px;border:1px solid #765da9;background:#0b1220e8;border-radius:10px;text-align:center;animation:pop .35s ease both}@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+#toast{position:fixed;z-index:100;left:50%;top:80px;transform:translateX(-50%);padding:9px 13px;background:#06151eea;border:1px solid #4792a0;border-radius:8px;display:none;color:#eaffff}
+#touch{position:fixed;z-index:30;left:10px;right:10px;bottom:12px;display:none;justify-content:space-between;align-items:flex-end;pointer-events:none}.touchGroup{display:flex;gap:7px;pointer-events:auto}.touchBtn{width:58px;height:58px;border-radius:14px;border:1px solid #4c8fa0;background:#061824d8;color:white;font-weight:800;font-size:18px}.touchBtn.small{width:48px;height:48px;font-size:14px}
+@media(max-width:800px){.hud{transform:scale(.82);transform-origin:left top}.actions{transform:scale(.84);transform-origin:right top}.hint{display:none}#touch{display:flex}.hpWrap{width:430px}.meta{max-width:300px}}
+</style>
+</head>
+<body>
+<canvas id="game" width="960" height="540"></canvas>
+<div class="hud"><div class="hpWrap"><div class="hpTitle" id="heroLabel">—</div><div class="hpFrame"><div class="hpTrack"><div cl
