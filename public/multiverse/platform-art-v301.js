@@ -1,0 +1,1 @@
+(()=>{const IMG=new Image();IMG.src='/multiverse/assets/dragon-platform-v301.webp?v=301';window.__MVA_PLATFORM_ART=IMG;})();
