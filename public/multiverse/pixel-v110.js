@@ -1,5 +1,5 @@
 (()=>{
-if(window.__multiversePixelV110)return;window.__multiversePixelV110=true;
+if(window.__multiversePixelV123)return;window.__multiversePixelV123=true;
 
 // --- Combat balance: ranged safety trades damage for distance ---
 try{
@@ -31,8 +31,8 @@ canvas{image-rendering:pixelated!important;image-rendering:crisp-edges!important
 .pixel-version{position:fixed;right:12px;bottom:82px;z-index:8;padding:5px 8px;border:2px solid #3c7688;background:#061722e8;color:#8ff1dc;font:800 10px ui-monospace,monospace;box-shadow:3px 3px 0 #02080c;pointer-events:none}
 `;
 document.head.appendChild(style);
-const ver=document.createElement('div');ver.className='pixel-version';ver.textContent='PIXEL ART v1.10 · BALANCE v1.1';document.body.appendChild(ver);
-const hint=document.querySelector('.hint');if(hint)hint.textContent='A/D · Space · Click combo · 1/2/3 skill · K dash · PIXEL v1.10';
+const ver=document.createElement('div');ver.className='pixel-version';ver.textContent='PIXEL ART v1.23 · ORIGINAL HERO';document.body.appendChild(ver);
+const hint=document.querySelector('.hint');if(hint)hint.textContent='A/D · Space · Click combo · 1/2/3 skill · K dash · PIXEL v1.23';
 
 // --- Low-resolution render target (640x360 -> 1280x720) ---
 const PC=document.createElement('canvas');PC.width=640;PC.height=360;
@@ -87,7 +87,7 @@ function playerSprite(){
   outlineRect(x-7,y+13+bob,14,14,'#26323b','#061017',2);outlineRect(x-6,y+27+bob,5,10,base,'#061017',2);outlineRect(x+1,y+27+bob,5,10,base,'#061017',2);
   outlineRect(x-6,y+2+bob,12,11,base,'#061017',2);rect(x+(dir>0?1:-4),y+6+bob,2,3,'#071017');
   rect(x-10,y+17+bob,4,3,'#dff7f4');rect(x+6,y+17+bob,4+(attack?4:0),3,'#dff7f4');
-  if(cls==='Knight'){outlineRect(x-13,y+15+bob,7,12,'#77a7b9','#d8f4f4',1);line(x+9,y+16+bob,x+dir*(attack?18:14),y+(attack?9:3)+bob,'#e9ffff',2);rect(x-6,y-1+bob,12,3,'#a9c6d0')}
+  if(cls==='Knight'){outlineRect(x-13,y+15+bob,7,12,'#668aa0','#d8f4f4',1);line(x+9,y+16+bob,x+dir*(attack?20:15),y+(attack?10:3)+bob,'#e9ffff',2);rect(x-6,y-1+bob,12,3,'#8eaabd');rect(x-2,y-8+bob,4,8,'#196b9c');rect(x+2,y-6+bob,4,5,'#3ca2cc');rect(x-5,y+5+bob,10,2,'#071017');rect(x-3,y+5+bob,6,1,'#67e0ff');rect(x-dir*10,y+12+bob,5,13,'#183e67');rect(x-dir*13,y+18+bob,4,5,'#28608f')}
   else if(cls==='Fighter'){outlineRect(x-15,y+14+bob,7,7,'#e99158','#ffd7bb',1);outlineRect(x+8,y+14+bob,7,7,'#e99158','#ffd7bb',1)}
   else if(cls==='Archer'){tri(x-7,y+4+bob,x,y-5+bob,x+7,y+4+bob,'#244838','#071017');P2.strokeStyle='#d1aa70';P2.lineWidth=2;P2.beginPath();P2.arc(x+11*dir,y+16+bob,7,dir>0?-1.1:2.0,dir>0?1.1:4.2);P2.stroke()}
   else if(cls==='Mage'){tri(x-8,y+4+bob,x,y-7+bob,x+8,y+4+bob,'#6f67cc','#071017');line(x+10*dir,y+12+bob,x+13*dir,y+28+bob,'#d4c6ff',2);pxCircle(x+10*dir,y+10+bob,3,'#b88cff')}
@@ -119,4 +119,31 @@ draw=function(){
   B.forEach(projectileSprite);F.forEach(fxSprite);if(on)playerSprite();
   X.save();X.setTransform(1,0,0,1,0,0);X.clearRect(0,0,W,H);X.imageSmoothingEnabled=false;X.drawImage(PC,0,0,GW,GH,0,0,W,H);X.restore();
 };
+
+// --- Gameplay v1.23: double jump + slightly slower basic attack ---
+let __jumpPrev=false,__airJumpUsed=false;
+const __oldUpdV123=upd;
+upd=function(){
+  const jump=!!(K.w||K.arrowup||K[' ']);
+  if(on&&jump&&!__jumpPrev&&!P.ground&&!__airJumpUsed){
+    const d=cfg();
+    P.vy=-d[1]*0.92;
+    P.ground=0;
+    __airJumpUsed=true;
+    try{fx('ring',P.x+P.w/2,P.y+P.h/2,'#64dfff',24)}catch{}
+  }
+  __oldUpdV123();
+  if(P.ground)__airJumpUsed=false;
+  __jumpPrev=jump;
+};
+const __oldBasicV123=basic;
+basic=function(){
+  if(P.atk)return;
+  __oldBasicV123();
+  if(P.atk>0)P.atk=Math.ceil(P.atk*1.20);
+  if(P.win>0)P.win=Math.max(P.win,30);
+};
+const __oldStV123=st;
+st=function(...args){__jumpPrev=false;__airJumpUsed=false;return __oldStV123(...args)};
+const __hintV123=document.querySelector('.hint');if(__hintV123)__hintV123.textContent='A/D · Space: double jump · Click combo · 1/2/3 skill · K dash · PIXEL v1.23';
 })();
