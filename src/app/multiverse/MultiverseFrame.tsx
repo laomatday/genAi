@@ -11,7 +11,7 @@ export default function MultiverseFrame() {
 
     const script = doc.createElement("script");
     script.id = "multiverse-summon";
-    script.src = "/multiverse/summon.js?v=090";
+    script.src = "/multiverse/summon.js?v=091";
     script.async = false;
     doc.body.appendChild(script);
   };
@@ -19,7 +19,7 @@ export default function MultiverseFrame() {
   return (
     <iframe
       ref={frameRef}
-      src="/multiverse/index.html?v=090"
+      src="/multiverse/index.html?v=091"
       title="Multiverse Adventures"
       onLoad={injectSummon}
       style={{ width: "100%", height: "100%", border: 0, display: "block" }}
