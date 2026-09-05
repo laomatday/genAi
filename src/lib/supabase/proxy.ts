@@ -17,7 +17,12 @@ export async function updateSession(request:NextRequest){
 
   const {data}=await supabase.auth.getClaims();
   const user=data?.claims;
-  const publicPath=request.nextUrl.pathname.startsWith("/login")||request.nextUrl.pathname.startsWith("/signup")||request.nextUrl.pathname.startsWith("/auth");
+  const path=request.nextUrl.pathname;
+  const publicPath=
+    path.startsWith("/login")||
+    path.startsWith("/signup")||
+    path.startsWith("/auth")||
+    path.startsWith("/multiverse");
 
   if(!user&&!publicPath){
     const redirectUrl=request.nextUrl.clone();
