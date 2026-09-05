@@ -20,12 +20,13 @@ export default function MultiverseFrame() {
 
     loadScript("multiverse-summon", "/multiverse/summon.js?v=091");
     loadScript("multiverse-visual", "/multiverse/visual.js?v=100");
+    loadScript("multiverse-menu-visual", "/multiverse/menu-visual.js?v=101");
   };
 
   return (
     <iframe
       ref={frameRef}
-      src="/multiverse/index.html?v=100"
+      src="/multiverse/index.html?v=101"
       title="Multiverse Adventures"
       onLoad={injectEnhancements}
       style={{ width: "100%", height: "100%", border: 0, display: "block" }}
